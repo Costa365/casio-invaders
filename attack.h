@@ -11,12 +11,14 @@ public:
   void fire(int n);
   void nextMove();
   void reset();
+  int getScore();
   std::string getAttack() const;
 
 private:
     std::vector<int> attack;
     int level;
     int size;
+    int score;
 };
  
 #endif

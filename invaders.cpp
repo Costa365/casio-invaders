@@ -12,6 +12,7 @@ using namespace std;
 char key = 0;
 std::mutex m;
 const int maxNums = 8;
+int score = 0;
 
 char keyp(char k = 0)
 {
@@ -82,25 +83,29 @@ void game() {
       attack.nextMove();
     }
   }while(c!='q' && nums.size()<=maxNums);
+  score = attack.getScore();
 }
 
 void info() {
-  std::cout << "----------------" << std::endl;
-  std::cout << " Casio Invaders " << std::endl << std::endl;
-  std::cout << " q: Exit " << std::endl;
-  std::cout << " z: Increment " << std::endl;
-  std::cout << " <space>: Fire" << std::endl;
-  std::cout << "----------------" << std::endl;
+  std::cout << "Casio Invaders" << std::endl << std::endl;
+  std::cout << "Keys:" << std::endl;
+  std::cout << "  q: Exit" << std::endl;
+  std::cout << "  z: Increment" << std::endl;
+  std::cout << "  <space>: Fire" << std::endl;
 }
 
-int main() {
-  info();
+int main(int argc, char* argv[]) {
+  for (int i = 1; i < argc; ++i) {
+    std::string arg = argv[i];
+    if (arg == "--help") {
+      info();
+      return 0;
+    }
+  }
   std::thread kp (getKeyPress);
   std::thread gm (game);
   gm.join();
-  std::cout << std::endl << "----------------" << std::endl;
-  std::cout << "   Game Over" << std::endl;
-  std::cout << "----------------" << std::endl;
+  std::cout << "\rScore: " << score << "          " << std::endl;
   kp.join();
   return 0;
 }
