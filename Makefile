@@ -2,7 +2,7 @@
 CXX=g++
 
 # Define flags
-CXXFLAGS=-lpthread
+CXXFLAGS=-lpthread -lncurses
 
 # Define the output directories
 OUTDIR=bin

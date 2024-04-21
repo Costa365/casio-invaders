@@ -1,10 +1,10 @@
 #include <iostream>
-#include <termios.h>
 #include <unistd.h>
 #include <thread>
 #include <mutex>
 #include <string>
 #include <iomanip>
+#include <ncurses.h>
 #include "attack.h"
 
 using namespace std;
@@ -13,6 +13,7 @@ char key = 0;
 std::mutex m;
 const int maxNums = 8;
 int score = 0;
+int gameOver = false;
 
 char keyp(char k = 0)
 {
@@ -32,28 +33,22 @@ char keyp(char k = 0)
 
 void getKeyPress()
 {
-  struct termios oldt, newt;
-  char ch=0;
-  int frame=0;
+  // Init ncurses mode
+  initscr();
+  cbreak();
+  noecho();
+  nodelay(stdscr, TRUE);
 
-  // Save the current terminal settings
-  tcgetattr(STDIN_FILENO, &oldt);
-  newt = oldt;
-  newt.c_lflag &= ~(ICANON | ECHO);
-
-  // Set non-blocking mode
-  tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-
-  while (ch!='q') {
-    // Check if a key has been pressed
-    if (read(STDIN_FILENO, &ch, 1) > 0) {
-      keyp(ch);
+  int ch=0;
+  
+  while(ch!='q' && !gameOver) {
+    while ((ch = getch()) == ERR && !gameOver) {
+      usleep(1000);
     }
-    usleep(1000);
+    keyp(ch);
   }
-
-  // Restore original terminal settings
-  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+  // End curses mode
+  endwin(); 
 }
 
 void game() {
@@ -84,6 +79,7 @@ void game() {
     }
   }while(c!='q' && nums.size()<=maxNums);
   score = attack.getScore();
+  gameOver = true;
 }
 
 void info() {
