@@ -101,7 +101,7 @@ int main(int argc, char* argv[]) {
   std::thread kp (getKeyPress);
   std::thread gm (game);
   gm.join();
-  std::cout << "\rScore: " << score << "          " << std::endl;
   kp.join();
+  std::cout << "\rScore: " << score << "          " << std::endl;
   return 0;
 }
