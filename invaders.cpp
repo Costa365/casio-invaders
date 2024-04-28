@@ -28,8 +28,7 @@ char UpdateKey(char newKey) {
   return 0;
 }
 
-void getKeyPress()
-{
+void getKeyPress() {
   // Init ncurses mode
   initscr();
   cbreak();

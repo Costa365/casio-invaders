@@ -7,7 +7,7 @@
 
 using namespace std;
 
-Attack::Attack(int length) : length(length){
+Attack::Attack(int length) : length(length) {
   reset();
 }
 
