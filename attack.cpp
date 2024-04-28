@@ -14,19 +14,26 @@ Attack::Attack(int length) : length(length) {
 void Attack::reset() {
   score = 0;
   level = 0;
+  launches = 0;
   attack.clear();
+  nextMove();
 }
 
 int Attack::getScore() {
   return score;
 }
 
+int Attack::getLaunches() {
+  return launches;
+}
+
 void Attack::fire(int target) {
-    auto iter = std::find(attack.begin(), attack.end(), target);
-    if (iter != attack.end()) {
-        attack.erase(iter);
-        ++score;
-    }
+  ++launches;
+  auto iter = std::find(attack.begin(), attack.end(), target);
+  if (iter != attack.end()) {
+      attack.erase(iter);
+      ++score;
+  }
 }
 
 void Attack::nextMove() {

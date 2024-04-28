@@ -14,6 +14,8 @@ std::mutex m;
 const int maxNums = 8;
 int score = 0;
 int gameOver = false;
+const int sleepus = 1000;
+double hitRate = 0.0;
 
 char getLastKeyPress() {
   std::lock_guard<std::mutex> lock(m);
@@ -39,7 +41,7 @@ void getKeyPress() {
   
   while(ch!='q' && !gameOver) {
     while ((ch = getch()) == ERR && !gameOver) {
-      usleep(1000);
+      usleep(sleepus);
     }
     UpdateKey(ch);
   }
@@ -54,6 +56,8 @@ void game() {
   char ch=0;
   string nums="";
   Attack attack;
+  const int baseMoveRate = 1000;
+  int moveRate = 0;
 
   do {
     ch=getLastKeyPress();
@@ -69,12 +73,14 @@ void game() {
     std::cout << " " << dispNum << " ≡ " << std::setfill(' ') <<
       std::setw(maxNums+1) << nums << "\r" << std::flush;
 
-    usleep(1000);
-    if(++frame % 1000 == 0){
+    usleep(sleepus);
+    moveRate = baseMoveRate - (attack.getScore()/5)*50;
+    if(++frame % moveRate == 0){
       attack.nextMove();
     }
   }while(ch!='q' && nums.size()<=maxNums);
   score = attack.getScore();
+  hitRate = ((double)score/(double)attack.getLaunches()) * 100.0 ;
   gameOver = true;
 }
 
@@ -98,6 +104,8 @@ int main(int argc, char* argv[]) {
   std::thread gameThread (game);
   gameThread.join();
   keyPressThread.join();
-  std::cout << "\rScore: " << score << "          " << std::endl;
+  std::cout << std::fixed;
+  std::cout << std::setprecision(2);
+  std::cout << "\rScore: " << score << " | Hit Rate: " << hitRate << "%       \n";
   return 0;
 }

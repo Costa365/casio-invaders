@@ -9,16 +9,18 @@ class Attack
 public:
   Attack(int length=8);
   void fire(int target);
-  void nextMove();
-  void reset();
   int getScore();
+  int getLaunches();
   std::string getAttack() const;
+  void nextMove();
 
 private:
-    std::vector<int> attack;
-    int level;
-    int length;
-    int score;
+  std::vector<int> attack;
+  int level;
+  int length;
+  int score;
+  int launches;
+  void reset();
 };
  
 #endif
