@@ -7,8 +7,8 @@
 class Attack   
 {
 public:
-  Attack(int size=8);
-  void fire(int n);
+  Attack(int length=8);
+  void fire(int target);
   void nextMove();
   void reset();
   int getScore();
@@ -17,7 +17,7 @@ public:
 private:
     std::vector<int> attack;
     int level;
-    int size;
+    int length;
     int score;
 };
  

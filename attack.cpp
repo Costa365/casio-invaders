@@ -7,10 +7,8 @@
 
 using namespace std;
 
-Attack::Attack(int size) {
+Attack::Attack(int length) : length(length){
   reset();
-  srand(time(NULL));
-  this->size = size;
 }
 
 void Attack::reset() {
@@ -23,21 +21,21 @@ int Attack::getScore() {
   return score;
 }
 
-void Attack::fire(int n) {
-  auto it = std::find(attack.begin(), attack.end(), n);
-  if (it != attack.end()) {
-      attack.erase(it);
-      score++;
-  }
+void Attack::fire(int target) {
+    auto iter = std::find(attack.begin(), attack.end(), target);
+    if (iter != attack.end()) {
+        attack.erase(iter);
+        ++score;
+    }
 }
 
 void Attack::nextMove() {
-  if(attack.size()<=this->size){
+  if(attack.size()<=length){
     attack.push_back(rand() % 11);
   }
 }
 
-string Attack::getAttack() const{
+string Attack::getAttack() const {
   std::stringstream ss;
   for (int num : attack) {
     (num==10)?ss << 'n':ss << num;
