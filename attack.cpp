@@ -5,8 +5,6 @@
 #include <iostream>
 #include <algorithm>
 
-using namespace std;
-
 Attack::Attack(int length) : length(length) {
   reset();
 }
@@ -42,7 +40,7 @@ void Attack::nextMove() {
   }
 }
 
-string Attack::getAttack() const {
+std::string Attack::getAttack() const {
   std::stringstream ss;
   for (int num : attack) {
     (num==10)?ss << 'n':ss << num;

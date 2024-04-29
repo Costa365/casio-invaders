@@ -7,14 +7,14 @@
 #include <ncurses.h>
 #include "attack.h"
 
-using namespace std;
+const int maxNums = 8;
+const int sleepus = 1000;
+const char rotateKey = 'z', fireKey = ' ', quitKey = 'q';
 
 char key = 0;
 std::mutex m;
-const int maxNums = 8;
 int score = 0;
 int gameOver = false;
-const int sleepus = 1000;
 double hitRate = 0.0;
 
 char getLastKeyPress() {
@@ -30,23 +30,26 @@ char UpdateKey(char newKey) {
   return 0;
 }
 
-void getKeyPress() {
-  // Init ncurses mode
+void initNcursesConsole() {
   initscr();
   cbreak();
   noecho();
   nodelay(stdscr, TRUE);
+}
 
+void deinitNcursesConsole() {
+  endwin();
+}
+
+void getKeyPress() {
   int ch=0;
   
-  while(ch!='q' && !gameOver) {
+  while(ch!=quitKey && !gameOver) {
     while ((ch = getch()) == ERR && !gameOver) {
       usleep(sleepus);
     }
     UpdateKey(ch);
   }
-  // End curses mode
-  endwin(); 
 }
 
 void game() {
@@ -54,31 +57,31 @@ void game() {
   int playNum=0;
   char dispNum='0';
   char ch=0;
-  string nums="";
+  std::string nums="";
   Attack attack;
   const int baseMoveRate = 1000;
   int moveRate = 0;
 
   do {
     ch=getLastKeyPress();
-    if(ch=='z') {
+    if(ch==rotateKey) {
       playNum=(++playNum)%11;
       playNum==10?dispNum='n':dispNum=playNum+'0';
     }
-    if(ch==' ') {
+    if(ch==fireKey) {
       attack.fire(playNum);
     }
 
     nums = attack.getAttack();
-    std::cout << " " << dispNum << " ≡ " << std::setfill(' ') <<
-      std::setw(maxNums+1) << nums << "\r" << std::flush;
+    std::cout << " " << dispNum << " ≡ " << std::setfill(' ') 
+              << std::setw(maxNums+1) << nums << "\r" << std::flush;
 
     usleep(sleepus);
     moveRate = baseMoveRate - (attack.getScore()/5)*50;
     if(++frame % moveRate == 0){
       attack.nextMove();
     }
-  }while(ch!='q' && nums.size()<=maxNums);
+  }while(ch!=quitKey && nums.size()<=maxNums);
   score = attack.getScore();
   hitRate = ((double)score/(double)attack.getLaunches()) * 100.0 ;
   gameOver = true;
@@ -100,12 +103,16 @@ int main(int argc, char* argv[]) {
       return 0;
     }
   }
+
+  initNcursesConsole();
   std::thread keyPressThread (getKeyPress);
   std::thread gameThread (game);
   gameThread.join();
   keyPressThread.join();
-  std::cout << std::fixed;
-  std::cout << std::setprecision(2);
-  std::cout << "\rScore: " << score << " | Hit Rate: " << hitRate << "%       \n";
+  deinitNcursesConsole();
+
+  std::cout << std::fixed << std::setprecision(2) 
+            << "\rScore: " << score << " | Hit Rate: " 
+            << hitRate << "%       \n";
   return 0;
 }
