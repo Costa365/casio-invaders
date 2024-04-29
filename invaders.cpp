@@ -82,8 +82,11 @@ void game() {
       attack.nextMove();
     }
   }while(ch!=quitKey && nums.size()<=maxNums);
+  
   score = attack.getScore();
-  hitRate = ((double)score/(double)attack.getLaunches()) * 100.0 ;
+  if(attack.getLaunches() > 0) {
+    hitRate = ((double)score/(double)attack.getLaunches()) * 100.0 ;
+  }
   gameOver = true;
 }
 
