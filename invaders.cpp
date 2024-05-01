@@ -59,8 +59,9 @@ void game() {
   char ch=0;
   std::string nums="";
   Attack attack;
-  const int baseMoveRate = 1000;
-  int moveRate = 0;
+  const int baseAttackRate = 1000;
+  int attackRate = 0;
+  int lastAttackFrame = 0;
 
   do {
     ch=getLastKeyPress();
@@ -75,10 +76,11 @@ void game() {
     nums = attack.getAttack();
     std::cout << " " << dispNum << " ≡ " << std::setfill(' ') 
               << std::setw(maxNums+1) << nums << "\r" << std::flush;
-
     usleep(sleepus);
-    moveRate = baseMoveRate - (attack.getScore()/5)*50;
-    if(++frame % moveRate == 0){
+    attackRate = baseAttackRate - (attack.getScore()/5)*50;
+    ++frame;
+    if(frame >= lastAttackFrame+attackRate){
+      lastAttackFrame = frame;
       attack.nextMove();
     }
   }while(ch!=quitKey && nums.size()<=maxNums);
