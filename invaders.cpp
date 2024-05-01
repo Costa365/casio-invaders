@@ -52,30 +52,30 @@ void getKeyPress() {
   }
 }
 
+void displayGame(std::string attackNums, char dispNum) { 
+  std::cout << " " << dispNum << " ≡ " << std::setfill(' ') 
+            << std::setw(maxAttackNums+1) << attackNums << "\r" << std::flush;
+}
+
 void game() {
-  int frame=0;
-  int playNum=0;
-  char dispNum='0';
-  char keyPress=0;
+  const int baseAttackRate = 1000;
+  int frame=0, missileNum=0, attackRate=0, lastAttackFrame=0;
+  char dispNum='0', keyPress=0;
   std::string attackNums="";
   Attack attack;
-  const int baseAttackRate = 1000;
-  int attackRate = 0;
-  int lastAttackFrame = 0;
 
   do {
     keyPress=getLastKeyPress();
     if (keyPress == rotateKey) {
-      playNum=(++playNum)%11;
-      playNum==10?dispNum='n':dispNum=playNum+'0';
+      missileNum=(++missileNum)%11;
+      missileNum==10?dispNum='n':dispNum=missileNum+'0';
     }
     if (keyPress == fireKey) {
-      attack.fire(playNum);
+      attack.fire(missileNum);
     }
 
     attackNums = attack.getAttack();
-    std::cout << " " << dispNum << " ≡ " << std::setfill(' ') 
-              << std::setw(maxAttackNums+1) << attackNums << "\r" << std::flush;
+    displayGame(attackNums, dispNum);
     usleep(sleepus);
     attackRate = baseAttackRate - (attack.getScore()/5)*50;
     ++frame;
