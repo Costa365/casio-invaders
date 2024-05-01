@@ -7,7 +7,7 @@
 #include <ncurses.h>
 #include "attack.h"
 
-const int maxNums = 8;
+const int maxAttackNums = 8;
 const int sleepus = 1000;
 const char rotateKey = 'z', fireKey = ' ', quitKey = 'q';
 
@@ -57,7 +57,7 @@ void game() {
   int playNum=0;
   char dispNum='0';
   char ch=0;
-  std::string nums="";
+  std::string attackNums="";
   Attack attack;
   const int baseAttackRate = 1000;
   int attackRate = 0;
@@ -73,9 +73,9 @@ void game() {
       attack.fire(playNum);
     }
 
-    nums = attack.getAttack();
+    attackNums = attack.getAttack();
     std::cout << " " << dispNum << " ≡ " << std::setfill(' ') 
-              << std::setw(maxNums+1) << nums << "\r" << std::flush;
+              << std::setw(maxAttackNums+1) << attackNums << "\r" << std::flush;
     usleep(sleepus);
     attackRate = baseAttackRate - (attack.getScore()/5)*50;
     ++frame;
@@ -83,7 +83,7 @@ void game() {
       lastAttackFrame = frame;
       attack.nextMove();
     }
-  }while(ch!=quitKey && nums.size()<=maxNums);
+  }while(ch!=quitKey && attackNums.size()<=maxAttackNums);
   
   score = attack.getScore();
   if(attack.getLaunches() > 0) {
