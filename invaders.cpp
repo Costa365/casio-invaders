@@ -44,7 +44,7 @@ void deinitNcursesConsole() {
 void getKeyPress() {
   int ch=0;
   
-  while(ch!=quitKey && !gameOver) {
+  while (ch!=quitKey && !gameOver) {
     while ((ch = getch()) == ERR && !gameOver) {
       usleep(sleepus);
     }
@@ -56,7 +56,7 @@ void game() {
   int frame=0;
   int playNum=0;
   char dispNum='0';
-  char ch=0;
+  char keyPress=0;
   std::string attackNums="";
   Attack attack;
   const int baseAttackRate = 1000;
@@ -64,12 +64,12 @@ void game() {
   int lastAttackFrame = 0;
 
   do {
-    ch=getLastKeyPress();
-    if(ch==rotateKey) {
+    keyPress=getLastKeyPress();
+    if (keyPress == rotateKey) {
       playNum=(++playNum)%11;
       playNum==10?dispNum='n':dispNum=playNum+'0';
     }
-    if(ch==fireKey) {
+    if (keyPress == fireKey) {
       attack.fire(playNum);
     }
 
@@ -79,14 +79,14 @@ void game() {
     usleep(sleepus);
     attackRate = baseAttackRate - (attack.getScore()/5)*50;
     ++frame;
-    if(frame >= lastAttackFrame+attackRate){
+    if (frame >= lastAttackFrame+attackRate){
       lastAttackFrame = frame;
       attack.nextMove();
     }
-  }while(ch!=quitKey && attackNums.size()<=maxAttackNums);
+  }while(keyPress!=quitKey && attackNums.size()<=maxAttackNums);
   
   score = attack.getScore();
-  if(attack.getLaunches() > 0) {
+  if (attack.getLaunches() > 0) {
     hitRate = ((double)score/(double)attack.getLaunches()) * 100.0 ;
   }
   gameOver = true;

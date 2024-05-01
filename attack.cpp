@@ -35,7 +35,7 @@ void Attack::fire(int target) {
 }
 
 void Attack::nextMove() {
-  if(attack.size()<=length){
+  if (attack.size() <= length){
     attack.push_back(rand() % 11);
   }
 }
